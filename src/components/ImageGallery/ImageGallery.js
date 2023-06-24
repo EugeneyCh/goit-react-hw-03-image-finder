@@ -80,8 +80,6 @@ class ImageGallery extends React.Component {
     const { isLoading } = this.state;
     const { selectedImage } = this.state;
 
-    {
-    }
     return (
       <>
         <ul className={css.imageGallery}>
