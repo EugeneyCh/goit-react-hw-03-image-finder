@@ -1,6 +1,7 @@
 import React from 'react';
 import { toast } from 'react-toastify';
 import css from './Searchbar.module.css';
+import PropTypes from 'prop-types';
 
 class Searchbar extends React.Component {
   state = {
@@ -11,7 +12,6 @@ class Searchbar extends React.Component {
   };
   handleSubmit = evt => {
     evt.preventDefault();
-    // console.log(this.state.searchWord);
     if (this.state.searchWord.trim() === '') {
       toast('Enter search value');
       this.reset();
@@ -47,4 +47,9 @@ class Searchbar extends React.Component {
     );
   }
 }
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
+
 export default Searchbar;

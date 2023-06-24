@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import css from './ImageGallery.module.css';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import axios from 'axios';
@@ -8,18 +9,15 @@ import Modal from 'components/Modal/Modal';
 class ImageGallery extends React.Component {
   state = {
     pictures: [],
-    totalCount: null,
+    totalCount: 0,
     isLoading: false,
     currentPage: 1,
-    // showLoadMore: true,
-    // showModal: false,
     selectedImage: null,
   };
 
   createSearchOptions(searchQuery) {
     const BASE_URL = 'https://pixabay.com/api/';
     const My_API_key = '35792081-ad86e3eac8072124d950161bb';
-    // const pageNumber = 1;
     const options = new URLSearchParams({
       key: My_API_key,
       q: searchQuery,
@@ -41,7 +39,6 @@ class ImageGallery extends React.Component {
       const totalCount = data.totalHits;
       const newPictures = data.hits;
       console.log('New pictures', newPictures);
-      // this.setState({ pictures: data, totalCount: data.totalHits });
       this.setState({ totalCount });
       this.setState(prevState => ({
         pictures: [...prevState.pictures, ...newPictures],
@@ -59,10 +56,7 @@ class ImageGallery extends React.Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.searchQuerry !== this.props.searchQuerry
-      // prevState.currentPage !== this.state.currentPage
-    ) {
+    if (prevProps.searchQuerry !== this.props.searchQuerry) {
       this.setState({ currentPage: 1, pictures: [] });
 
       console.log('Changed searchQuerry');
@@ -74,25 +68,7 @@ class ImageGallery extends React.Component {
       this.getFetchImages();
     } else return;
 
-    // const { showLoadMore } = this.state;
-
-    console.log(this.state);
-
-    // try {
-    //   const { data } = await axios.get(
-    //     this.createSearchOptions(this.props.searchQuerry)
-    //   );
-    //   this.setState({ pictures: data, totalCount: data.totalHits });
-
-    //   console.log(this.state.pictures);
-    // } catch (error) {
-    //   console.error(error);
-    // } finally {
-    //   this.setState({ isLoading: false });
-    //   // if (this.state.pictures.totalHits - this.state.currentPage * 12 <= 12) {
-    //   //   this.setState.showLoadMore = false;
-    //   // }
-    // }
+    // console.log(this.state);
   }
 
   toggleModal = () => {
@@ -101,17 +77,10 @@ class ImageGallery extends React.Component {
 
   render() {
     const pictures = this.state.pictures;
-    // const totalPictures = this.state.totalHits;
     const { isLoading } = this.state;
-    // const { showLoadMore } = this.state;
-    // const { showModal } = this.state;
     const { selectedImage } = this.state;
-    // if (this.state.pictures.totalHits - this.state.currentPage * 12 <= 12) {
-    //   showLoadMore = false;
-    // }
 
     {
-      // console.log('Quantity of pictures', pictures);
     }
     return (
       <>
@@ -147,5 +116,13 @@ class ImageGallery extends React.Component {
     );
   }
 }
+
+ImageGallery.propTypes = {
+  pictures: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  onOpenModal: PropTypes.func.isRequired,
+  totalCount: PropTypes.number.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  selectedImage: PropTypes.string.isRequired,
+};
 
 export default ImageGallery;

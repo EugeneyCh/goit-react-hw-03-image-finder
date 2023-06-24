@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import css from './Modal.module.css';
 // import ReactDOM from 'react-dom';
 import { createPortal } from 'react-dom';
+import PropTypes from 'prop-types';
 
 const modalRoot = document.querySelector('#modal-root');
 
@@ -21,7 +22,6 @@ class Modal extends Component {
   };
 
   handleBackDropClick = e => {
-    // console.log('Shot on backdrop');
     if (e.currentTarget === e.target) {
       this.props.onClose();
     }
@@ -29,7 +29,6 @@ class Modal extends Component {
 
   render() {
     const { image } = this.props;
-    // console.log('Modal Image:', image);
 
     return createPortal(
       <div className={css.overlay} onClick={this.handleBackDropClick}>
@@ -39,7 +38,11 @@ class Modal extends Component {
       </div>,
       modalRoot
     );
-    //   document.getElementById('modal-root')
   }
 }
+
+Modal.propTypes = {
+  image: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
 export default Modal;
