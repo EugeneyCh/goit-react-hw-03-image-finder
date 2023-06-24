@@ -9,22 +9,26 @@ class App extends React.Component {
   state = {
     // pictures: [],
     searchQuerry: '',
+    // currentPage: 1,
     // url: '',
   };
 
   handleFormSubmit = searchQuerry => {
-    console.log(this.state.searchQuerry);
+    // console.log(this.state.searchQuerry);
 
     this.setState({ searchQuerry });
-    console.log('Search :', searchQuerry);
-    console.log(this.state.searchQuerry);
+    // console.log('Search :', searchQuerry);
+    // console.log(this.state.searchQuerry);
   };
 
   render() {
     return (
       <div className={css.app}>
         <Searchbar onSubmit={this.handleFormSubmit} />
-        <ImageGallery searchQuerry={this.state.searchQuerry} />
+        <ImageGallery
+          searchQuerry={this.state.searchQuerry}
+          // currentPage={this.state.currentPage}
+        />
         {/* <ImageGallery
           children={<ImageGalleryItem pictures={this.state.pictures} />}
         /> */}

@@ -11,8 +11,8 @@ class ImageGallery extends React.Component {
     totalCount: null,
     isLoading: false,
     currentPage: 1,
-    showLoadMore: true,
-    showModal: false,
+    // showLoadMore: true,
+    // showModal: false,
     selectedImage: null,
   };
 
@@ -26,31 +26,35 @@ class ImageGallery extends React.Component {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      page: 1,
-      per_page: 12 * this.state.currentPage,
+      page: this.state.currentPage,
+      per_page: 12,
     });
     return BASE_URL + `?` + options.toString();
   }
   async getFetchImages() {
+    this.setState({ isLoading: true });
+
     try {
       const { data } = await axios.get(
         this.createSearchOptions(this.props.searchQuerry)
       );
-      this.setState({ pictures: data, totalCount: data.totalHits });
-
-      console.log(this.state.pictures);
+      const totalCount = data.totalHits;
+      const newPictures = data.hits;
+      console.log('New pictures', newPictures);
+      // this.setState({ pictures: data, totalCount: data.totalHits });
+      this.setState({ totalCount });
+      this.setState(prevState => ({
+        pictures: [...prevState.pictures, ...newPictures],
+      }));
+      console.log('Pictures in state', this.state);
     } catch (error) {
       console.error(error);
     } finally {
       this.setState({ isLoading: false });
-      // if (this.state.pictures.totalHits - this.state.currentPage * 12 <= 12) {
-      //   this.setState.showLoadMore = false;
-      // }
     }
   }
 
   handleClickLoadMore = () => {
-    // if (this.state.pictures - this.state.currentPage * 12 >= 12) {
     this.setState({ currentPage: this.state.currentPage + 1 });
   };
 
@@ -59,17 +63,17 @@ class ImageGallery extends React.Component {
       prevProps.searchQuerry !== this.props.searchQuerry
       // prevState.currentPage !== this.state.currentPage
     ) {
-      this.setState({ currentPage: 1 });
-      // console.log('Choose searchQuerry');
-      // console.log(this.state);
-      this.getFetchImages();
-      // return;
-    } else return;
-    if (prevState.currentPage !== this.state.currentPage) {
-      this.getFetchImages();
-    }
+      this.setState({ currentPage: 1, pictures: [] });
 
-    this.setState({ isLoading: true });
+      console.log('Changed searchQuerry');
+      console.log('State will be empty', this.state);
+      this.getFetchImages();
+      return;
+    } else if (prevState.currentPage !== this.state.currentPage) {
+      console.log('Changed  current page');
+      this.getFetchImages();
+    } else return;
+
     // const { showLoadMore } = this.state;
 
     console.log(this.state);
@@ -91,23 +95,26 @@ class ImageGallery extends React.Component {
     // }
   }
 
+  toggleModal = () => {
+    this.setState({ selectedImage: null });
+  };
+
   render() {
-    const pictures = this.state.pictures.hits;
-    const totalPictures = this.state.total;
+    const pictures = this.state.pictures;
+    // const totalPictures = this.state.totalHits;
     const { isLoading } = this.state;
-    const { showLoadMore } = this.state;
-    const { showModal } = this.state;
+    // const { showLoadMore } = this.state;
+    // const { showModal } = this.state;
     const { selectedImage } = this.state;
     // if (this.state.pictures.totalHits - this.state.currentPage * 12 <= 12) {
     //   showLoadMore = false;
     // }
 
     {
-      console.log('Quantity of pictures', pictures);
+      // console.log('Quantity of pictures', pictures);
     }
     return (
       <>
-        {isLoading && <Loader />}
         <ul className={css.imageGallery}>
           {pictures &&
             pictures.map(picture => (
@@ -120,18 +127,22 @@ class ImageGallery extends React.Component {
               />
             ))}
         </ul>
-        {showLoadMore &&
+        {isLoading && <Loader />}
+
+        {!isLoading &&
           pictures &&
-          this.state.pictures.totalHits - this.state.currentPage * 12 >= 12 && (
+          this.state.totalCount - (this.state.currentPage - 1) * 12 >= 12 && (
             <button
               type="button"
-              className={css.loadMore}
+              className={css.button}
               onClick={this.handleClickLoadMore}
             >
               Load More
             </button>
           )}
-        {selectedImage && <Modal image={this.state.selectedImage} />}
+        {selectedImage && (
+          <Modal image={this.state.selectedImage} onClose={this.toggleModal} />
+        )}
       </>
     );
   }
