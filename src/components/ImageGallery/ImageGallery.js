@@ -24,6 +24,7 @@ class ImageGallery extends React.Component {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
+      page: this.state.currentPage,
       per_page: 12,
     });
     return BASE_URL + `?` + options.toString();
@@ -72,7 +73,7 @@ class ImageGallery extends React.Component {
     this.setState({ currentPage: 1, pictures: [] });
     console.log('Current Page must be 1', this.state.currentPage);
 
-    this.getFetchImages(this.props.searchQuery, this.props.currentPage);
+    this.getFetchImages(this.props.searchQuery, this.state.currentPage);
     console.log('Render new querry');
     console.log(this.state);
   }
