@@ -73,7 +73,7 @@ class ImageGallery extends React.Component {
     this.setState({ currentPage: 1, pictures: [] });
     console.log('Current Page must be 1', this.state.currentPage);
 
-    this.getFetchImages(this.props.searchQuery, this.state.currentPage);
+    this.getFetchImages();
     console.log('Render new querry');
     console.log(this.state);
   }
