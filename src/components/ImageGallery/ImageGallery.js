@@ -24,7 +24,6 @@ class ImageGallery extends React.Component {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      page: this.state.currentPage,
       per_page: 12,
     });
     return BASE_URL + `?` + options.toString();
@@ -34,11 +33,14 @@ class ImageGallery extends React.Component {
 
     try {
       const { data } = await axios.get(
-        this.createSearchOptions(this.props.searchQuerry)
+        this.createSearchOptions(
+          this.props.searchQuerry,
+          this.state.currentPage
+        )
       );
       const totalCount = data.totalHits;
       const newPictures = data.hits;
-      console.log('New pictures', newPictures);
+      console.log('New pictures');
       this.setState({ totalCount });
       this.setState(prevState => ({
         pictures: [...prevState.pictures, ...newPictures],
@@ -56,19 +58,23 @@ class ImageGallery extends React.Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    if (prevProps.searchQuerry !== this.props.searchQuerry) {
-      this.setState({ currentPage: 1, pictures: [] });
-
-      console.log('Changed searchQuerry');
-      console.log('State will be empty', this.state);
-      this.getFetchImages();
+    if (prevProps.searchQuerry === this.props.searchQuerry) {
+      if (
+        prevState.currentPage !== this.state.currentPage &&
+        this.state.currentPage !== 1
+      ) {
+        console.log('Changed  current page');
+        this.getFetchImages();
+      }
       return;
-    } else if (prevState.currentPage !== this.state.currentPage) {
-      console.log('Changed  current page');
-      this.getFetchImages();
-    } else return;
+    }
+    console.log('Changed searchQuerry');
+    this.setState({ currentPage: 1, pictures: [] });
+    console.log('Current Page must be 1', this.state.currentPage);
 
-    // console.log(this.state);
+    this.getFetchImages(this.props.searchQuery, this.props.currentPage);
+    console.log('Render new querry');
+    console.log(this.state);
   }
 
   toggleModal = () => {
@@ -116,11 +122,11 @@ class ImageGallery extends React.Component {
 }
 
 ImageGallery.propTypes = {
-  pictures: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
-  onOpenModal: PropTypes.func.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  selectedImage: PropTypes.string.isRequired,
+  // pictures: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  // onOpenModal: PropTypes.func.isRequired,
+  // totalCount: PropTypes.number.isRequired,
+  // isLoading: PropTypes.bool.isRequired,
+  searchQuerry: PropTypes.string.isRequired,
 };
 
 export default ImageGallery;
