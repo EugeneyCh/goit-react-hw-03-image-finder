@@ -4,9 +4,13 @@ import css from './ImageGalleryItem.module.css';
 
 class ImageGalleryItem extends React.Component {
   render() {
-    const { key, image } = this.props;
+    const { itemKey, image } = this.props;
     return (
-      <li key={key} className={css.galleryItem} onClick={this.props.onClick}>
+      <li
+        key={itemKey}
+        className={css.galleryItem}
+        onClick={this.props.onClick}
+      >
         <img src={image} alt={image} />
       </li>
     );
@@ -14,7 +18,7 @@ class ImageGalleryItem extends React.Component {
 }
 
 ImageGalleryItem.propTypes = {
-  key: PropTypes.number.isRequired,
+  itemKey: PropTypes.number,
   image: PropTypes.string.isRequired,
 };
 

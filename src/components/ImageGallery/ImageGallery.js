@@ -38,12 +38,12 @@ class ImageGallery extends React.Component {
       );
       const totalCount = data.totalHits;
       const newPictures = data.hits;
-      console.log('New pictures');
+      // console.log('New pictures');
       this.setState({ totalCount });
       this.setState(prevState => ({
         pictures: [...prevState.pictures, ...newPictures],
       }));
-      console.log('Pictures in state', this.state);
+      // console.log('Pictures in state', this.state);
     } catch (error) {
       console.error(error);
     } finally {
@@ -61,17 +61,17 @@ class ImageGallery extends React.Component {
         prevState.currentPage !== this.state.currentPage &&
         this.state.currentPage !== 1
       ) {
-        console.log('Changed  current page');
+        // console.log('Changed  current page');
         this.getFetchImages();
       }
       return;
     }
     if (prevProps.searchQuerry !== this.props.searchQuerry) {
       this.setState({ currentPage: 1, pictures: [] }, () => {
-        console.log('Current Page reset to 1', this.state.currentPage);
+        // console.log('Current Page reset to 1', this.state.currentPage);
         this.getFetchImages();
-        console.log('Render new query');
-        console.log(this.state);
+        // console.log('Render new query');
+        // console.log(this.state);
       });
     }
   }
