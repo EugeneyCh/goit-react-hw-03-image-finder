@@ -34,10 +34,7 @@ class ImageGallery extends React.Component {
 
     try {
       const { data } = await axios.get(
-        this.createSearchOptions(
-          this.props.searchQuerry,
-          this.state.currentPage
-        )
+        this.createSearchOptions(this.props.searchQuerry)
       );
       const totalCount = data.totalHits;
       const newPictures = data.hits;
@@ -69,13 +66,14 @@ class ImageGallery extends React.Component {
       }
       return;
     }
-    console.log('Changed searchQuerry');
-    this.setState({ currentPage: 1, pictures: [] });
-    console.log('Current Page must be 1', this.state.currentPage);
-
-    this.getFetchImages();
-    console.log('Render new querry');
-    console.log(this.state);
+    if (prevProps.searchQuerry !== this.props.searchQuerry) {
+      this.setState({ currentPage: 1, pictures: [] }, () => {
+        console.log('Current Page reset to 1', this.state.currentPage);
+        this.getFetchImages();
+        console.log('Render new query');
+        console.log(this.state);
+      });
+    }
   }
 
   toggleModal = () => {
@@ -83,9 +81,7 @@ class ImageGallery extends React.Component {
   };
 
   render() {
-    const pictures = this.state.pictures;
-    const { isLoading } = this.state;
-    const { selectedImage } = this.state;
+    const { pictures, isLoading, selectedImage } = this.state;
 
     return (
       <>
@@ -123,10 +119,6 @@ class ImageGallery extends React.Component {
 }
 
 ImageGallery.propTypes = {
-  // pictures: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
-  // onOpenModal: PropTypes.func.isRequired,
-  // totalCount: PropTypes.number.isRequired,
-  // isLoading: PropTypes.bool.isRequired,
   searchQuerry: PropTypes.string.isRequired,
 };
 
